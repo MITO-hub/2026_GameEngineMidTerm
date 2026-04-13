@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded;
     private float moveInput;
+    Animator anim;
 
     void Awake()
     {
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        anim = GetComponent<Animator>();        //애니메이터 가져오기
     }
 
     // Update is called once per frame
@@ -29,6 +30,9 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+
+        float h = Input.GetAxisRaw("Horizontal");       //좌우 입력값 (-1, 0, 1)
+        anim.SetFloat("Speed", Mathf.Abs(h));       //입력값(절대값)을 애니메이터의 Speed 파라미터에 전달
     }
 
     public void OnMove(InputValue value)
