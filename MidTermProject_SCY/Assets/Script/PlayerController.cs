@@ -13,7 +13,9 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool isJumping; 
     private float moveInput;
-    Animator anim;
+    Animator anim;                              //
+
+    private bool isGiant = false;
 
     void Awake()
     {
@@ -30,6 +32,21 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+
+        if (isGiant)
+        {
+            if (moveInput < 0)
+                transform.localScale = new Vector3(2, 2, 2);
+            else if (moveInput > 0)
+                transform.localScale = new Vector3(-2, 2, 2);
+        }
+        else
+        {
+            if (moveInput < 0)
+                transform.localScale = new Vector3(1, 1, 1);
+            else if (moveInput > 0)
+                transform.localScale = new Vector3(-1, 1, 1);
+        }
 
         if (moveInput > 0)
             transform.localScale = new Vector3(1, 1, 1);
@@ -78,5 +95,28 @@ public class PlayerController : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
+        
+        if (collision.CompareTag("Finish"))
+        {
+            collision.GetComponent<LevelObject>().MoveToNextLevel();
+        }
+
+        if (collision.CompareTag("Enemy"))
+        {
+            if (isGiant)
+                Destroy(collision.gameObject);
+            else
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        if (collision.CompareTag("Item"))
+        {
+            isGiant = true;
+            Destroy(collision.gameObject);
+        }
+    }
+    void ResetGiant()
+    {
+        isGiant = false;
     }
 }
