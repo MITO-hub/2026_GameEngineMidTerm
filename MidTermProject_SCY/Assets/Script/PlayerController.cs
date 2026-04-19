@@ -12,48 +12,72 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool isJumping; 
-    private float moveInput;
-    Animator anim;                              //
+    private float moveInput;                
+    Animator anim;                                                                              //                      
 
     private bool isGiant = false;
+    private bool isFast = false;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();                                                        //
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        anim = GetComponent<Animator>();        //애니메이터 가져오기
+        anim = GetComponent<Animator>();                                                        //애니메이터 가져오기
     }
 
     // Update is called once per frame
     void Update()
     {
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+        float currentSpeed = isFast ? moveSpeed * 2f : moveSpeed;                               //
+        rb.linearVelocity = new Vector2(moveInput * currentSpeed, rb.linearVelocity.y);         //
 
+        float scale = isGiant ? 2f : 1f;                                                        //
+        if (moveInput < 0)                                                                      //
+            transform.localScale = new Vector3(-scale, scale, 1);                               //
+        else if (moveInput > 0)                                                                 //
+            transform.localScale = new Vector3(scale, scale, 1);                                //
+
+        // 바닥 체크
+        float checkRadius = isGiant ? 0.4f : 0.2f;                                              //
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);   //
+
+        if (isGrounded)                                                                         //
+        {
+            anim.SetFloat("Speed", Mathf.Abs(moveInput));                                       //
+        }
+        else
+        {
+            anim.SetFloat("Speed", 0);                                                          //
+        }
+
+        /*
         if (isGiant)
         {
             if (moveInput < 0)
-                transform.localScale = new Vector3(2, 2, 2);
-            else if (moveInput > 0)
                 transform.localScale = new Vector3(-2, 2, 2);
+            else if (moveInput > 0)
+                transform.localScale = new Vector3(2, 2, 2);
         }
         else
         {
             if (moveInput < 0)
-                transform.localScale = new Vector3(1, 1, 1);
-            else if (moveInput > 0)
                 transform.localScale = new Vector3(-1, 1, 1);
+            else if (moveInput > 0)
+                transform.localScale = new Vector3(1, 1, 1);
         }
-
+        
         if (moveInput > 0)
             transform.localScale = new Vector3(1, 1, 1);
         else if (moveInput < 0)
             transform.localScale = new Vector3(-1, 1, 1);
-
-            isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        
 
         if (isGrounded)
         {
@@ -73,10 +97,13 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("Player_Jump");
             isJumping = true;
         }
+        */
     }
 
     public void OnMove(InputValue value)
     {
+        float finalJumpForce = isGiant ? jumpForce * 1.2f : jumpForce;
+
         Vector2 input = value.Get<Vector2>();
         moveInput = input.x;
     }
@@ -93,7 +120,14 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Respawn"))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            if (!isGiant)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+            else
+            {
+                Debug.Log("거대화 상태라 함정을 무시합니다!");
+            }
         }
         
         if (collision.CompareTag("Finish"))
@@ -111,12 +145,29 @@ public class PlayerController : MonoBehaviour
 
         if (collision.CompareTag("Item"))
         {
+            Debug.Log("거대화 아이템 획득!");
             isGiant = true;
+            Invoke(nameof(ResetGiant), 7f);
+            Destroy(collision.gameObject);
+        }
+
+        if (collision.CompareTag("SpeedItem"))
+        {
+            Debug.Log("아이템 획득!");
+            isFast = true;
+            Invoke(nameof(ResetSpeed), 3f);
             Destroy(collision.gameObject);
         }
     }
     void ResetGiant()
     {
         isGiant = false;
+        transform.localScale = new Vector3(1, 1, 1);                                                //
+    }
+
+    void ResetSpeed()
+    {
+        Debug.Log("속도 정상화");
+        isFast = false;
     }
 }
