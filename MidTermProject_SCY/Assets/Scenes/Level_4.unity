@@ -244,6 +244,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4955338580401219919, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
+      propertyPath: m_Color.b
+      value: 0.93333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 4955338580401219919, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 4955338580401219919, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
+      propertyPath: m_Color.r
+      value: 0.972549
+      objectReference: {fileID: 0}
     - target: {fileID: 6184273958441191367, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
       propertyPath: m_Name
       value: Speed Item
@@ -38992,6 +39004,18 @@ PrefabInstance:
     - target: {fileID: 3685528754114220867, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4955338580401219919, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
+      propertyPath: m_Color.b
+      value: 0.93333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 4955338580401219919, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 4955338580401219919, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
+      propertyPath: m_Color.r
+      value: 0.972549
       objectReference: {fileID: 0}
     - target: {fileID: 6184273958441191367, guid: 19f139b94987b4e4bb579b87ed81a3db, type: 3}
       propertyPath: m_Name
