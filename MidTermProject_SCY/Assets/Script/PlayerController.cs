@@ -13,100 +13,46 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool isJumping; 
     private float moveInput;                
-    Animator anim;                                                                              //
-    private float animSpeed;                                                                    //
+    Animator anim;                                                                              //플레이어 오브젝트에 붙어 있는 Animator 컴포넌트를 저장할 변수
+    private float animSpeed;                                                                    //애니메이션 속도값을 부드럽게 바꾸기 위해 따로 저장하는 변수
 
     private bool isGiant = false;
     private bool isFast = false;
-    private SpriteRenderer sr;                                                                  //
+    private SpriteRenderer sr;                                                                  //플레이어의 SpriteRenderer 컴포넌트를 저장하는 변수
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();                                                        //
+        anim = GetComponent<Animator>();                                                        //현재 플레이어 오브젝트에 붙어 있는 Animator 컴포넌트를 가져와서 anim 변수에 넣는 코드
         sr = GetComponent<SpriteRenderer>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        /*
-        anim = GetComponent<Animator>();                                                        //애니메이터 가져오기
-        */
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        float currentSpeed = isFast ? moveSpeed * 2f : moveSpeed;                               //
-        rb.linearVelocity = new Vector2(moveInput * currentSpeed, rb.linearVelocity.y);         //
+        float currentSpeed = isFast ? moveSpeed * 2f : moveSpeed;                               //현재 플레이어의 실제 이동 속도를 계산하는 코드
+        rb.linearVelocity = new Vector2(moveInput * currentSpeed, rb.linearVelocity.y);         //플레이어의 속도를 직접 설정하는 코드
 
-        /*
-        float scale = isGiant ? 2f : 1f;                                                        //
-        if (moveInput < 0)                                                                      //
-            transform.localScale = new Vector3(-scale, scale, 1);                               //
-        else if (moveInput > 0)                                                                 //
-            transform.localScale = new Vector3(scale, scale, 1);                                //
-        */
-
-        if (moveInput < 0)
-            sr.flipX = true;
-        else if (moveInput > 0)
+        if (moveInput < 0)                                                                      //플레이어가 보는 방향을 바꾸는 코드입니다.
+            sr.flipX = true;                                                                    
+        else if (moveInput > 0)                                                                 
         {
-            sr.flipX = false;
+            sr.flipX = false;                                                                   
         }
 
         // 바닥 체크
-        float checkRadius = isGiant ? 0.5f : 0.3f;                                              //
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);   //
+        float checkRadius = isGiant ? 0.5f : 0.3f;                                              //바닥을 체크할 원의 반지름을 정하는 코드
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);   //플레이어가 현재 땅 위에 있는지 검사하는 코드
 
-        animSpeed = Mathf.Lerp(animSpeed, Mathf.Abs(moveInput), 15f * Time.deltaTime);
-        anim.SetFloat("Speed", Mathf.Abs(moveInput));
-        anim.SetBool("isJumping", !isGrounded);
-
-        /*
-        if (isGiant)
-        {
-            if (moveInput < 0)
-                transform.localScale = new Vector3(-0.1f, 0.1f, 0.1f);
-            else if (moveInput > 0)
-                transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        }
-        else
-        {
-            if (moveInput < 0)
-                transform.localScale = new Vector3(-0.07f, 0.07f, 0.07f);
-            else if (moveInput > 0)
-                transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
-        }
-        
-        if (moveInput > 0)
-            transform.localScale = new Vector3(1, 1, 1);
-        else if (moveInput < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-        
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-        
-
-        if (isGrounded)
-        {
-            float h = Input.GetAxisRaw("Horizontal");       //좌우 입력값 (-1, 0, 1)
-            anim.SetFloat("Speed", Mathf.Abs(h));       //입력값(절대값)을 애니메이터의 Speed 파라미터에 전달
-
-            isJumping = false;
-        }
-        else
-        {
-            anim.SetFloat("Speed", 0);
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            anim.SetTrigger("Player_Jump");
-            isJumping = true;
-        }
-        */
+        animSpeed = Mathf.Lerp(animSpeed, Mathf.Abs(moveInput), 15f * Time.deltaTime);          //애니메이션용 속도값을 현재 값에서 목표값으로 부드럽게 바꾸는 코드
+        anim.SetFloat("Speed", Mathf.Abs(moveInput));                                           //애니메이터의 Speed 파라미터에 현재 이동량을 전달하는 코드
+        anim.SetBool("isJumping", !isGrounded);                                                 //애니메이터의 isJumping 파라미터를 설정하는 코드
     }
 
     public void OnMove(InputValue value)
@@ -174,7 +120,7 @@ public class PlayerController : MonoBehaviour
     void ResetGiant()
     {
         isGiant = false;
-        transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);                                                //
+        transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);                                                //거대화 효과가 끝났을 때 플레이어의 크기를 원래대로 되돌리는 코드
     }
 
     void ResetSpeed()
@@ -183,12 +129,12 @@ public class PlayerController : MonoBehaviour
         isFast = false;
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        if (groundCheck == null) return;
+    private void OnDrawGizmosSelected()                                                                         //유니티 에디터에서 오브젝트를 선택했을 때만 보조선을 그려 주는 함수
+    {                                                                               
+        if (groundCheck == null) return;                                                                        //groundCheck가 연결되지 않았을 때 함수를 바로 끝내는 코드
 
-        Gizmos.color = Color.red;
-        float checkRadius = isGiant ? 0.4f : 0.2f;
-        Gizmos.DrawWireSphere(groundCheck.position, 0.4f);
+        Gizmos.color = Color.red;                                                                               //Scene 뷰에 그릴 보조선의 색을 빨간색으로 지정
+        float checkRadius = isGiant ? 0.4f : 0.2f;                                                              //Gizmo로 그릴 바닥 체크 원의 반지름을 정하는 코드
+        Gizmos.DrawWireSphere(groundCheck.position, 0.4f);                                                      //groundCheck.position 위치에 반지름 0.4f인 원을 Scene 뷰에 그리는 코드
     }
 }
