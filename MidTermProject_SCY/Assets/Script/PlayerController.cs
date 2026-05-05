@@ -20,11 +20,14 @@ public class PlayerController : MonoBehaviour
     private bool isFast = false;
     private SpriteRenderer sr;                                                                  //플레이어의 SpriteRenderer 컴포넌트를 저장하는 변수
 
+    float score;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();                                                        //현재 플레이어 오브젝트에 붙어 있는 Animator 컴포넌트를 가져와서 anim 변수에 넣는 코드
         sr = GetComponent<SpriteRenderer>();
+        score = 0f;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -89,6 +92,7 @@ public class PlayerController : MonoBehaviour
         
         if (collision.CompareTag("Finish"))
         {
+            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
             collision.GetComponent<LevelObject>().MoveToNextLevel();
         }
 
@@ -107,6 +111,7 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             Invoke(nameof(ResetGiant), 7f);
             Destroy(collision.gameObject);
+            score += 10f;
         }
 
         if (collision.CompareTag("SpeedItem"))
