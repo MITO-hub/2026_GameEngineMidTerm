@@ -92,7 +92,8 @@ public class PlayerController : MonoBehaviour
         
         if (collision.CompareTag("Finish"))
         {
-            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
+            //HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
+            StageResultSaver.SaveStage(SceneManager.GetActiveScene().buildIndex, (int)score);
             collision.GetComponent<LevelObject>().MoveToNextLevel();
         }
 
@@ -112,6 +113,7 @@ public class PlayerController : MonoBehaviour
             Invoke(nameof(ResetGiant), 7f);
             Destroy(collision.gameObject);
             score += 10f;
+            score += collision.GetComponent<ItemObject>().GetPoint();
         }
 
         if (collision.CompareTag("SpeedItem"))
@@ -120,6 +122,8 @@ public class PlayerController : MonoBehaviour
             isFast = true;
             Invoke(nameof(ResetSpeed), 3f);
             Destroy(collision.gameObject);
+            score += 20f;
+            score += collision.GetComponent<ItemObject>().GetPoint();
         }
     }
     void ResetGiant()
