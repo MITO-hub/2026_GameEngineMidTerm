@@ -5,25 +5,24 @@ using TMPro;
 public class RankPage : MonoBehaviour
 {
     [SerializeField] Transform contentRoot;
-
     [SerializeField] GameObject rowPrefab;
+    
+    private StageResultList allData;
 
-    StageResultList allData;
-
-    void Awake()
+    private void Awake()
     {
         allData = StageResultSaver.LoadRank();
-        RefreshRankList();
+        ShowStageRank(1);
     }
 
-    void RefreshRankList()
+    public void ShowStageRank(int stageNumber)
     {
         foreach (Transform child in contentRoot)
         {
             Destroy(child.gameObject);
         }
 
-        var sortedData = allData.results.Where(r => r.stage == 1).OrderByDescending(x => x.score).ToList();
+        var sortedData = allData.results.Where(r => r.stage == stageNumber).OrderByDescending(r => r.score).ToList();
 
         for (int i = 0; i < sortedData.Count; i++)
         {
